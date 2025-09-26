@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "created": "2025-09-25T06:12:29.426Z",
+    "version": "1.0",
+    "school": "St. Mary's High School",
+    "createdBy": "Teacher Dashboard",
+    "backupName": "Backup_2025-09-25"
+  },
+  "data": {
+    "students": [],
+    "teachers": [],
+    "grades": [],
+    "notices": [],
+    "settings": [],
+    "fees": []
+  }
+}
