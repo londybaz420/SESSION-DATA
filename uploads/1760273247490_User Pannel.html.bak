@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>FTGM Smm Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400..700&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        * {
+            box-sizing: border-box;
+            border-radius: 15px; /* Rounded corners for all elements */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(145deg, #ffe4d9, #fffaf7);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-weight: bold; /* Bold font throughout */
+        }
+        
+        /* --- START: Fade-in Animation --- */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* --- END: Fade-in Animation --- */
+
+
+        .title-image {
+            max-width: 300px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle, .howto-title {
+            color: red;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .howto-box {
+            background: white;
+            padding: 20px;
+            border: 2px solid #ff9800;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+        }
+
+        .howto-title {
+            font-size: 22px;
+            color: #333;
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .howto-box ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .button-container {
+            display: flex;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 10px;
+        }
+
+        .video-btn, .account-btn, .submit-btn, .howto-btn, .warning-btn, .main-popup-button, .back-btn {
+            color: white;
+            font-weight: bold;
+            padding: 12px 20px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            border-radius: 15px;
+        }
+
+        .video-btn:hover, .account-btn:hover, .submit-btn:hover, .howto-btn:hover, .warning-btn:hover, .main-popup-button:hover, .back-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .video-btn {
+            background: linear-gradient(90deg, #00c4b4, #00866E);
+            flex-grow: 1;
+            margin-right: 5px;
+        }
+
+        .account-btn {
+            background: linear-gradient(90deg, #ff4d4d, #cc0000);
+            flex-grow: 1;
+            margin-left: 5px;
+        }
+
+        .dropdown, .form-group, .submit-btn {
+            width: 100%;
+            max-width: 500px;
+            margin: 10px 0;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        select, textarea, input, button {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            margin-top: 6px;
+            box-sizing: border-box;
+            border-radius: 15px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(90deg, #ff9500, #ff6200);
+        }
+
+        .back-btn {
+            background: linear-gradient(90deg, #6c757d, #495057);
+        }
+        
+        /* Popups are now simple with no animations */
+        .popup, .account-popup, .warning-popup, #otherServicePopup, .main-popup-content {
+            background: white;
+            padding: 20px;
+            border: 2px solid #ff9800;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 90%;
+            max-width: 360px;
+            transform: translate(-50%, -50%);
+            z-index: 999;
+        }
+
+        .account-popup {
+            border-color: #cc0000;
+        }
+
+        .popup, .account-popup, .warning-popup, #otherServicePopup {
+            display: none;
+            border-radius: 15px;
+        }
+        
+        .main-popup-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            border-radius: 15px;
+        }
+        
+        .close-btn {
+            background: linear-gradient(90deg, #6c757d, #495057);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 15px;
+        }
+
+        .popup h3 {
+            margin-top: 0;
+            text-align: center;
+            color: #333;
+        }
+
+        .howto-btn {
+            background: linear-gradient(90deg, #007bff, #0056b3);
+        }
+        
+        /* --- START: Toast Styling (Modified) --- */
+        .toast {
+            visibility: hidden;
+            background-color: #333; /* Default background */
+            color: #fff;
+            text-align: center;
+            padding: 16px;
+            position: fixed;
+            z-index: 1005; /* High z-index */
+            left: 50%;
+            top: 50%; /* Centered vertically */
+            transform: translate(-50%, -50%); /* Centered horizontally */
+            font-size: 17px;
+            opacity: 0;
+            transition: opacity 0.5s, visibility 0.5s;
+            border-radius: 15px;
+            min-width: 250px;
+        }
+        
+        .toast.warning {
+             background-color: #D32F2F; /* Red for warning */
+             font-weight: bold;
+        }
+
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        /* --- END: Toast Styling (Modified) */
+
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 998;
+        }
+        
+        /* --- START: Footer Styling (Modified) --- */
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+            font-size: 14px;
+            color: #555;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .footer-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .footer-description {
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+        
+        .footer-image {
+            max-width: 100%;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        
+        .professional-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-weight: bold;
+            color: #333;
+        }
+        /* --- END: Footer Styling (Modified) --- */
+
+
+        .howto-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .howto-popup img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .close-iframe {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(90deg, #ff4d4d, #cc0000);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            z-index: 1002;
+        }
+
+        .warning-btn {
+            background: linear-gradient(90deg, #ffc107, #ff8c00);
+            color: black;
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+
+        .main-popup {
+            display: none;
+            position: fixed;
+            z-index: 1003;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .main-popup-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            border-radius: 15px;
+        }
+
+        .main-popup-content h2 {
+            font-family: 'Righteous', sans-serif;
+            color: #333;
+        }
+
+        .main-close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .main-close-button:hover,
+        .main-close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .main-popup-button {
+            background: linear-gradient(90deg, #4CAF50, #2e7d32);
+            margin: 5px;
+        }
+
+        .whatsapp-fab {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 40px;
+            right: 40px;
+            background: linear-gradient(90deg, #25d366, #1eb356);
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 3px #999;
+            z-index: 100;
+        }
+
+        .whatsapp-fab i {
+            margin-top: 15px;
+        }
+
+        .success-message {
+            color: #28a745;
+            font-weight: 600;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .urdu-text {
+            font-family: 'Noto Nastaliq Urdu', sans-serif;
+            text-align: right;
+            direction: rtl;
+        }
+
+        .warning-list {
+            list-style-type: none;
+            padding-left: 0;
+            text-align: right;
+            direction: rtl;
+            font-family: 'Noto Nastaliq Urdu', sans-serif;
+        }
+        
+        .warning-list li {
+            position: relative;
+            padding-right: 25px; /* Adjust space for the tick mark */
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .warning-list li .fas.fa-check {
+            position: absolute;
+            right: 0;
+            top: 5px;
+            color: #28a745;
+            font-size: 16px;
+        }
+
+        /* Loading spinner CSS */
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .upload-status {
+            font-weight: bold;
+            color: green;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<audio id="clickSound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_24ae917e3d.mp3" preload="auto"></audio>
+<img id="titleImage" src="https://i.postimg.cc/prRTLggj/FTGM-SMM-Logo-title.png" alt="FTGM Panel" class="title-image fade-in-section"/>
+
+<div class="howto-box fade-in-section">
+    <h2 class="howto-title">How to Use?</h2>
+    <ul>
+        <li>Click on <strong>Add Payment</strong> and send Payment</li>
+        <li>Take <strong>Payment Screenshot</strong>!</li>
+        <li>Select Service</li>
+        <li>Upload Payment Screenshot</li>
+        <li>Add All Details</li>
+        <li>Click on Submit</li>
+        <li>If you don't know how to use our website, you can click the "Watch Video" button to see how to use!</li>
+    </ul>
+</div>
+
+<div class="button-container fade-in-section">
+    <button class="video-btn" onclick="playClickSound(); window.open('https://youtu.be/mxDLfeQdPNQ?si=M85i6np_y06_dVJ4', '_blank')">
+        <i class="fas fa-video"></i> Watch Video
+    </button>
+    <button class="account-btn" onclick="playClickSound(); showAccountPopup()">
+       <i class="fas fa-money-bill-wave"></i> Add Payment
+    </button>
+</div>
+
+<div class="dropdown fade-in-section">
+    <label for="service">Select Service</label>
+    <select id="service" onchange="playClickSound(); showPopup()">
+        <option value="">-- Select --</option>
+    </select>
+</div>
+
+<div class="dropdown fade-in-section">
+    <label for="otherService">Other Services</label>
+    <select id="otherService" onchange="playClickSound(); showOtherServicePopup()">
+        <option value="">-- Select --</option>
+    </select>
+</div>
+
+<button class="warning-btn fade-in-section" onclick="playClickSound(); showWarningPopup()"><i class="fas fa-exclamation-triangle"></i> Important Note</button>
+
+<div class="popup" id="popupForm">
+    <h3>Place Your Order</h3>
+    <div class="form-group">
+        <label>Upload Payment Screenshot</label>
+        <input type="file" id="paymentScreenshot" accept="image/*" onchange="uploadImage(this, 'screenshotUrl', 'loader', 'successMessage')">
+        <div id="loader" style="display: none;"><div class="spinner"></div>Uploading...</div>
+        <div id="result" class="result-section">
+            <div id="successMessage" class="upload-status" style="display: none;"><b>Screenshot Uploaded ✅</b></div>
+            <input type="hidden" id="screenshotUrl">
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Amount</label>
+        <textarea id="amount" rows="1" placeholder="Enter pay amount min 50"></textarea>
+    </div>
+    <div class="form-group">
+        <label>Paste your video link here</label>
+        <textarea id="videoLink" rows="2" placeholder="https://..."></textarea>
+    </div>
+    <div class="form-group">
+        <label>Quantity</label>
+        <textarea id="quantity" rows="1" placeholder="Min: 500 - Max: 50,000"></textarea>
+    </div>
+    <button class="submit-btn" onclick="playClickSound(); sendToWhatsapp()"><i class="fas fa-paper-plane"></i> Submit</button>
+    <button class="close-btn" onclick="playClickSound(); closePopups()">Close</button>
+</div>
+
+<div class="popup account-popup" id="accountPopup">
+    <h3><i class="fas fa-university"></i> Easypaisa Account</h3>
+    <p><strong>Account Number:</strong> <span id="accNum"></span></p>
+    <p><strong>Account Name:</strong>Muhammad Shehzad</p>
+    <p><strong>NOTE:</strong>After Sending Payment Must Take A Screenshot. Upload That Payment Screenshot Before Placing The Order!</p>
+    <button class="submit-btn" onclick="playClickSound(); copyAccount()"><i class="fas fa-copy"></i> Copy Account Number</button>
+    <button class="back-btn" onclick="playClickSound(); closePopups()"><i class="fas fa-arrow-left"></i> Back</button>
+</div>
+
+<div class="howto-popup" id="howtoPopup">
+    <button class="close-iframe" onclick="playClickSound(); closeHowTo()">×</button>
+    <img src="https://i.postimg.cc/DZJMHx0q/20250512-075312.jpg" alt="How To Add Transaction ID"/>
+</div>
+
+<div class="warning-popup" id="warningPopup">
+    <h3>Important Information</h3>
+    <ul class="warning-list urdu-text">
+        <li><i class="fas fa-check"></i>کم از کم 50 روپے سینڈ کر سکتے ہیں اس سے کم Accept نہیں ہونگے۔</li>
+        <li><i class="fas fa-check"></i> ہر سروس کم از کم 500 کی تعداد میں مل سکتی ہے اگر آپکو مزید کم چاہیے تو آپ Other Services میں سے تلاش کریں۔</li>
+        <li><i class="fas fa-check"></i> آپ نے Submit کے بٹن پر کلک کر کہ اپنے آڈر کی تفصیلات دیکھ کر آڑر والا میسج سینڈ کرنا ہے۔ آپ کا آڈر جلد مکمل ہو جاے گا۔</li>
+        <li><i class="fas fa-check"></i> اگر آپکا آرڈر مکمل نہیں ہوتا تو آپکا کیش واپس کیا جائے گا 💯</li>
+    </ul>
+    <button class="howto-btn" onclick="playClickSound(); closeWarningPopup()">Got it</button>
+</div>
+
+<div class="popup" id="otherServicePopup">
+    <h3>Place Your Order</h3>
+    <div class="form-group">
+        <label>Upload Payment Screenshot</label>
+        <input type="file" id="otherServicePaymentScreenshot" accept="image/*" onchange="uploadImage(this, 'otherServiceScreenshotUrl', 'otherServiceLoader', 'otherServiceSuccessMessage')">
+        <div id="otherServiceLoader" style="display: none;"><div class="spinner"></div>Uploading...</div>
+        <div id="otherServiceResult" class="result-section">
+            <div id="otherServiceSuccessMessage" class="upload-status" style="display: none;"><b>Screenshot Uploaded ✅</b></div>
+            <input type="hidden" id="otherServiceScreenshotUrl">
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Amount</label>
+        <textarea id="otherServiceAmount" rows="1" placeholder="Enter pay amount min 50"></textarea>
+    </div>
+    <div class="form-group">
+        <label>Details</label>
+        <textarea id="otherServiceDetails" rows="2" placeholder="Enter details for the service"></textarea>
+    </div>
+    <button class="submit-btn" onclick="playClickSound(); sendOtherServiceToWhatsapp()"><i class="fas fa-paper-plane"></i> Get Now</button>
+    <button class="close-btn" onclick="playClickSound(); closePopups()">Close</button>
+</div>
+
+<div id="mainPopup" class="main-popup">
+    <div class="main-popup-content">
+        <span class="main-close-button">&times;</span>
+        <h2 id="popupTitle"></h2>
+        <p id="popupDescription"></p>
+        <button class="main-popup-button" onclick="playClickSound(); closeMainPopup()">Close</button>
+        <button class="main-popup-button" id="popupOrderNowBtn" onclick="playClickSound(); openLink('https://wa.me/923104882921')">More</button>
+    </div>
+</div>
+
+<a id="whatsappFab" href="https://wa.me/923104882921" class="whatsapp-fab" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+<div class="overlay" id="overlay"></div>
+<div class="toast" id="toast"></div>
+<footer class="fade-in-section">
+    <strong class="footer-title">About FTGM Pannel</strong>
+    <p class="footer-description">
+        <b>Pakistan's Best Services Provider</b><br/>
+        Welcome to FTGM Pannel, A best website for high-quality, affordable social media services. You can get everything in very low price in whole market. Our website give services for major platforms like Instagram, TikTok YouTube and Facebook providing you with likes followers views, and comments at the Cheapest rates
+​But our services are more than just a tool for growth. You can utilize them for your own personal and business accounts to enhance your brand's visibility and engagement. You can become a reseller you can easily resell these services to clients, creating a profitable online business with minimal effort. This makes it an ideal way to start a free, flexible online earning stream. We also provide secure virtual numbers for WhatsApp, Telegram, and other applications, verything available in low price just place your order and if you have any questions click on WhatsApp icon. Thanks!
+  </p>
+    <img id="footerImage" src="https://i.postimg.cc/8cmGQV1Q/f6acm8d.png" alt="SMM Services" class="footer-image"/>
+    <div class="professional-footer">
+        Pannel Owner: Rana Faisal Ali
+    </div>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script>
+    // Copy and paste your project's configuration code here
+    // For example:
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://ftgm-pannel-default-rtdb.firebaseio.com/",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "...",
+      appId: "..."
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // References
+    const dbRefs = {
+        config: database.ref('config'),
+        services: database.ref('services/main'),
+        otherServices: database.ref('services/other')
+    };
+
+    // Load data from Firebase
+    dbRefs.config.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            // Update Images
+            if (data.images) {
+                document.getElementById('titleImage').src = data.images.title;
+                document.getElementById('footerImage').src = data.images.footer;
+            }
+            // Update Hot Deal Popup
+            if (data.mainPopup) {
+                document.getElementById('popupTitle').textContent = data.mainPopup.title;
+                document.getElementById('popupDescription').textContent = data.mainPopup.description;
+                document.getElementById('popupOrderNowBtn').textContent = data.mainPopup.orderButtonText;
+                document.getElementById('popupOrderNowBtn').onclick = () => openLink(data.mainPopup.orderLink);
+                if (data.mainPopup.enabled) {
+                    document.getElementById('mainPopup').style.display = "flex";
+                } else {
+                    document.getElementById('mainPopup').style.display = "none";
+                }
+            }
+            // Update Payment Number
+            if (data.payment && data.payment.accountNumber) {
+                 document.getElementById('accNum').textContent = data.payment.accountNumber;
+            }
+            // Update WhatsApp FAB Link
+            if (data.whatsapp && data.whatsapp.fabLink) {
+                 document.getElementById('whatsappFab').href = data.whatsapp.fabLink;
+            }
+        }
+    });
+
+    dbRefs.services.on('value', (snapshot) => {
+        const select = document.getElementById('service');
+        select.innerHTML = '<option value="">-- Select --</option>';
+        snapshot.forEach((childSnapshot) => {
+            const service = childSnapshot.val();
+            const option = document.createElement('option');
+            option.value = service.value;
+            option.textContent = service.name;
+            select.appendChild(option);
+        });
+    });
+
+    dbRefs.otherServices.on('value', (snapshot) => {
+        const select = document.getElementById('otherService');
+        select.innerHTML = '<option value="">-- Select --</option>';
+        snapshot.forEach((childSnapshot) => {
+            const service = childSnapshot.val();
+            const option = document.createElement('option');
+            option.value = service.value;
+            option.textContent = service.name;
+            select.appendChild(option);
+        });
+    });
+
+    function showPopup() {
+        const service = document.getElementById("service").value;
+        if (!service) {
+            return;
+        }
+        document.getElementById("popupForm").style.display = "block";
+        document.getElementById("overlay").style.display = "block";
+    }
+
+    function showAccountPopup() {
+        document.getElementById("accountPopup").style.display = "block";
+        document.getElementById("overlay").style.display = "block";
+    }
+
+    function closePopups() {
+        document.getElementById("accountPopup").style.display = "none";
+        document.getElementById("popupForm").style.display = "none";
+        document.getElementById("warningPopup").style.display = "none";
+        document.getElementById("howtoPopup").style.display = "none";
+        document.getElementById("otherServicePopup").style.display = "none";
+        document.getElementById("overlay").style.display = "none";
+    }
+
+    // --- START: Toast Function (Modified) ---
+    function showToast(message, isWarning = false) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        
+        if (isWarning) {
+            toast.classList.add("warning");
+        } else {
+            toast.classList.remove("warning");
+        }
+        
+        toast.classList.add("show");
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, 5000); // Increased duration to 5 seconds
+    }
+    // --- END: Toast Function (Modified) ---
+
+    // --- START: Copy Function (Improved) ---
+    function copyAccount() {
+        const accountNumber = document.getElementById('accNum').textContent;
+        
+        // Use a temporary input field for a more reliable copy method
+        let tempInput = document.createElement("input");
+        tempInput.value = accountNumber;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        tempInput.setSelectionRange(0, 99999); // For mobile devices
+        
+        try {
+            document.execCommand('copy');
+            showToast("Account Number Copied ✅. Now Send Payment And Take A Screenshot to Upload Before Placing The Order!");
+        } catch (err) {
+            console.error("Copy failed: ", err);
+            showToast("Failed to copy. Please copy manually.", true);
+        }
+        
+        document.body.removeChild(tempInput);
+    }
+    // --- END: Copy Function (Improved) ---
+
+    async function uploadImage(fileInput, urlInputId, loaderId, successMessageId) {
+        const file = document.getElementById(fileInput.id).files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('key', '274910e7dcf1794b3cdcce6956bc00b3');
+
+        const loader = document.getElementById(loaderId);
+        const successMessage = document.getElementById(successMessageId);
+        const urlInput = document.getElementById(urlInputId);
+
+        loader.style.display = 'block';
+        successMessage.style.display = 'none';
+
+        try {
+            const response = await fetch('https://api.imgbb.com/1/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            if (data.success) {
+                urlInput.value = data.data.url;
+                successMessage.style.display = 'block';
+            } else {
+                showToast('Image upload failed: ' + (data.error.message || 'Unknown error'), true);
+            }
+        } catch (error) {
+            showToast('Error uploading image: ' + error.message, true);
+        } finally {
+            loader.style.display = 'none';
+        }
+    }
+
+    // --- START: WhatsApp Functions (Modified with Validation) ---
+    function sendToWhatsapp() {
+        const service = document.getElementById("service").options[document.getElementById("service").selectedIndex].text;
+        const link = document.getElementById("videoLink").value.trim();
+        const quantity = document.getElementById("quantity").value.trim();
+        const amount = document.getElementById("amount").value.trim();
+        const screenshotUrl = document.getElementById("screenshotUrl").value.trim();
+        
+        const parsedQuantity = parseInt(quantity);
+        
+        if (!screenshotUrl || !amount || !link || !quantity) {
+            showToast("Please fill all details and upload the screenshot.", true);
+            return;
+        }
+
+        if (isNaN(amount) || Number(amount) < 50) {
+            showToast("Minimum Payment is 50.", true);
+            return;
+        }
+        
+        if (isNaN(parsedQuantity) || parsedQuantity < 500 || parsedQuantity > 50000) {
+            showToast("Quantity must be between 500 and 50,000.", true);
+            return;
+        }
+
+        const message = `*🌐𝗙𝗧𝗚𝗠 𝗣𝗔𝗡𝗡𝗘𝗟 𝗦𝗘𝗥𝗩𝗜𝗖𝗘⚡:*\n\nService: ${service}\nPayment Screenshot:\n\ ${screenshotUrl}\nAmount: ${amount}\nLink: ${link}\nQuantity: ${quantity}`;
+        closePopups();
+        showToast("Redirecting to Admin!");
+        const url = `${document.getElementById('whatsappFab').href}?text=${encodeURIComponent(message)}`;
+        window.open(url, "_blank");
+    }
+
+    function sendOtherServiceToWhatsapp() {
+        const otherService = document.getElementById("otherService").options[document.getElementById("otherService").selectedIndex].text;
+        const amount = document.getElementById("otherServiceAmount").value.trim();
+        const details = document.getElementById("otherServiceDetails").value.trim();
+        const screenshotUrl = document.getElementById("otherServiceScreenshotUrl").value.trim();
+        
+        if (!screenshotUrl || !amount || !details) {
+            showToast("Please fill all details and upload the screenshot.", true);
+            return;
+        }
+
+        if (isNaN(amount) || Number(amount) < 50) {
+            showToast("Minimum Payment is 50.", true);
+            return;
+        }
+
+        const message = `*🌐𝗙𝗧𝗚𝗠 𝗢𝗧𝗛𝗘𝗥 𝗦𝗘𝗥𝗩𝗜𝗖𝗘𝗦⚡:*\n\nService:\n\ ${otherService}\nPayment Screenshot:\n\ ${screenshotUrl}\nAmount: ${amount}\nDetails: ${details}`;
+        closePopups();
+        showToast("Redirecting to Admin!");
+        const url = `${document.getElementById('whatsappFab').href}?text=${encodeURIComponent(message)}`;
+        window.open(url, "_blank");
+    }
+    // --- END: WhatsApp Functions ---
+
+    function showHowTo() {
+        document.getElementById("howtoPopup").style.display = "flex";
+        document.getElementById("overlay").style.display = "block";
+    }
+
+    function closeHowTo() {
+        document.getElementById("howtoPopup").style.display = "none";
+        document.getElementById("overlay").style.display = "none";
+    }
+
+    function showWarningPopup() {
+        document.getElementById("warningPopup").style.display = "block";
+        document.getElementById("overlay").style.display = "block";
+    }
+
+    function closeWarningPopup() {
+        document.getElementById("warningPopup").style.display = "none";
+        document.getElementById("overlay").style.display = "none";
+    }
+
+    var mainPopup = document.getElementById("mainPopup");
+    var mainCloseButton = document.querySelector(".main-close-button");
+
+    function closeMainPopup() {
+        mainPopup.style.display = "none";
+    }
+
+    function openLink(url) {
+        window.location.href = url;
+    }
+
+    window.onclick = function(event) {
+        if (event.target == mainPopup) {
+            mainPopup.style.display = "none";
+        }
+    }
+
+    mainCloseButton.onclick = function() {
+        mainPopup.style.display = "none";
+    }
+
+    function showOtherServicePopup() {
+        const otherService = document.getElementById("otherService").value;
+        if (!otherService) {
+            return;
+        }
+        document.getElementById("otherServicePopup").style.display = "block";
+        document.getElementById("overlay").style.display = "block";
+    }
+    
+    // --- START: Click Sound Function ---
+    function playClickSound() {
+        const sound = document.getElementById('clickSound');
+        sound.currentTime = 0; // Rewind to the start
+        sound.play();
+    }
+    // --- END: Click Sound Function ---
+    
+    // --- START: Fade-in on Scroll ---
+    document.addEventListener("DOMContentLoaded", function() {
+        const sections = document.querySelectorAll('.fade-in-section');
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, {
+            threshold: 0.1 // Trigger when 10% of the element is visible
+        });
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    });
+    // --- END: Fade-in on Scroll ---
+</script>
+</body>
+</html>
